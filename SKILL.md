@@ -19,6 +19,41 @@ metadata:
               "label": "Install uv (brew)",
             },
           ],
+        "tools":
+          {
+            "nova_act":
+              {
+                "description": "Run a browser automation task using Amazon Nova Act.",
+                "parameters":
+                  {
+                    "type": "object",
+                    "properties":
+                      {
+                        "url":
+                          {
+                            "type": "string",
+                            "description": "Starting URL for the browser session",
+                          },
+                        "task":
+                          {
+                            "type": "string",
+                            "description": "Natural language task description (e.g., 'Find flights from SFO to NYC')",
+                          },
+                      },
+                    "required": ["url", "task"],
+                  },
+                "command":
+                  [
+                    "uv",
+                    "run",
+                    "{baseDir}/scripts/nova_act_runner.py",
+                    "--url",
+                    "{{url}}",
+                    "--task",
+                    "{{task}}",
+                  ],
+              },
+          },
       },
   }
 ---
