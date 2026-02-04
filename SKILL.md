@@ -37,7 +37,7 @@ metadata:
                         "task":
                           {
                             "type": "string",
-                            "description": "Natural language task description (e.g., 'Find flights from SFO to NYC')",
+                            "description": "Natural language task description. IMPORTANT: Resolve relative dates (e.g., 'next Monday') to specific dates (e.g., '2025-03-15') in the prompt.",
                           },
                       },
                     "required": ["url", "task"],
@@ -189,8 +189,9 @@ with NovaAct(starting_page="https://news.ycombinator.com") as nova:
 ## Best Practices
 
 1. **Combine steps**: Nova Act maintains context best within a single `act()` call. Combine related actions into one multi-line prompt.
-2. **Be specific in prompts**: "Click the blue 'Submit' button at the bottom" is better than "Click submit"
-3. **Use schemas for extraction**: Always provide a schema to `act_get()` for structured data
+2. **Use specific dates**: The browser agent may struggle with relative dates like "next Monday". Always calculate and provide specific dates (e.g., "March 15, 2025") in the task prompt.
+3. **Be specific in prompts**: "Click the blue 'Submit' button at the bottom" is better than "Click submit"
+4. **Use schemas for extraction**: Always provide a schema to `act_get()` for structured data
 4. **Handle page loads**: Nova Act waits for stability, but add explicit waits for dynamic content if needed
 5. **Take screenshots for verification**: Use `nova.page.screenshot()` to capture results
 
