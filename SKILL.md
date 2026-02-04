@@ -87,8 +87,8 @@ from nova_act import NovaAct
 
 with NovaAct(starting_page="https://example.com") as nova:
     # Execute actions with natural language
-    nova.act("Click the search box and type 'automation'")
-    nova.act("Press Enter to search")
+    # Combine steps into a single act() call to maintain context
+    nova.act("Click the search box, type 'automation', and press Enter")
 
     # Extract data with schema
     results = nova.act_get(
@@ -108,13 +108,15 @@ Run with: `uv run script.py`
 
 ### `nova.act(prompt)` - Execute Actions
 
-Use for clicking, typing, scrolling, navigation:
+Use for clicking, typing, scrolling, navigation. **Note:** Context is best maintained within a single `act()` call, so combine related steps.
 
 ```python
-nova.act("Click the 'Sign In' button")
-nova.act("Type 'hello@example.com' in the email field")
-nova.act("Scroll down to the pricing section")
-nova.act("Select 'California' from the state dropdown")
+nova.act("""
+    Click the 'Sign In' button.
+    Type 'hello@example.com' in the email field.
+    Scroll down to the pricing section.
+    Select 'California' from the state dropdown.
+""")
 ```
 
 ### `nova.act_get(prompt, schema)` - Extract Data
@@ -147,11 +149,14 @@ items = nova.act_get("List all product names", schema=list[str])
 
 ```python
 with NovaAct(starting_page="https://google.com/flights") as nova:
-    nova.act("Search for round-trip flights from SFO to JFK")
-    nova.act("Set departure date to March 15, 2025")
-    nova.act("Set return date to March 22, 2025")
-    nova.act("Click Search")
-    nova.act("Sort by price, lowest first")
+    # Combine steps to ensure the agent maintains context through the flow
+    nova.act("""
+        Search for round-trip flights from SFO to JFK.
+        Set departure date to March 15, 2025.
+        Set return date to March 22, 2025.
+        Click Search.
+        Sort by price, lowest first.
+    """)
 
     flights = nova.act_get(
         "Get the top 3 cheapest flights with airline, price, and times",
@@ -163,10 +168,12 @@ with NovaAct(starting_page="https://google.com/flights") as nova:
 
 ```python
 with NovaAct(starting_page="https://example.com/signup") as nova:
-    nova.act("Fill the form: name 'John Doe', email 'john@example.com'")
-    nova.act("Select 'United States' for country")
-    nova.act("Check the 'I agree to terms' checkbox")
-    nova.act("Click Submit")
+    nova.act("""
+        Fill the form: name 'John Doe', email 'john@example.com'.
+        Select 'United States' for country.
+        Check the 'I agree to terms' checkbox.
+        Click Submit.
+    """)
 ```
 
 ### Data Extraction
@@ -181,8 +188,8 @@ with NovaAct(starting_page="https://news.ycombinator.com") as nova:
 
 ## Best Practices
 
-1. **Be specific in prompts**: "Click the blue 'Submit' button at the bottom" is better than "Click submit"
-2. **Break complex tasks into steps**: Multiple `act()` calls are more reliable than one long instruction
+1. **Combine steps**: Nova Act maintains context best within a single `act()` call. Combine related actions into one multi-line prompt.
+2. **Be specific in prompts**: "Click the blue 'Submit' button at the bottom" is better than "Click submit"
 3. **Use schemas for extraction**: Always provide a schema to `act_get()` for structured data
 4. **Handle page loads**: Nova Act waits for stability, but add explicit waits for dynamic content if needed
 5. **Take screenshots for verification**: Use `nova.page.screenshot()` to capture results
